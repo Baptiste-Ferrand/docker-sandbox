@@ -43,6 +43,7 @@ jobs:
       - name: Construire le projet
         run: npm run build
 
+
   # Job 3: Construire et déployer l'image Docker
   build-and-deploy-image:
     needs: setup-docker-tag
@@ -71,4 +72,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/${{ github.repository }}:${{ needs.setup-docker-tag.outputs.docker_tag || 'latest' }}
+          tags: ghcr.io/baptiste-ferrand/dockersandbox:${{ needs.setup-docker-tag.outputs.docker_tag || 'latest' }}
