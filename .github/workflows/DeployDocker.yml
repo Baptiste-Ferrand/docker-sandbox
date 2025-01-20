@@ -44,7 +44,7 @@ jobs:
         run: npm run build
 
   # Job 3: Construire et déployer l'image Docker
- build-and-deploy-image:
+  build-and-deploy-image:
     needs: setup-docker-tag
     runs-on: ubuntu-latest
     steps:
