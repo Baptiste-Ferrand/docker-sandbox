@@ -6,9 +6,9 @@ on:
       - main
       - develop
 
-      
 jobs:
-  setup-docker-tag:
+  # Job 1: Définir le tag Docker
+ setup-docker-tag:
     runs-on: ubuntu-latest
     outputs:
       docker_tag: ${{ steps.set-tag.outputs.tag }}
@@ -24,12 +24,41 @@ jobs:
             echo "tag=dev" >> $GITHUB_OUTPUT
           fi
 
-  build-and-deploy-image:
+  # Job 2: Installer les dépendances et construire le projet
+  install-dependencies-and-build:
     needs: setup-docker-tag
     runs-on: ubuntu-latest
     steps:
       - name: Checkout du dépôt
         uses: actions/checkout@v4
+
+      - name: Configurer Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Installer les dépendances
+        run: npm ci --frozen-lockfile
+
+      - name: Construire le projet
+        run: npm run build
+
+  # Job 3: Construire et déployer l'image Docker
+ build-and-deploy-image:
+    needs: setup-docker-tag
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout du dépôt
+        uses: actions/checkout@v4
+
+      - name: Valider le tag généré
+        run: |
+          TAG="${{ needs.setup-docker-tag.outputs.docker_tag }}"
+          if [[ ! "$TAG" =~ ^[a-zA-Z0-9_.-]+$ ]]; then
+            echo "Invalid tag format: $TAG"
+            exit 1
+          fi
 
       - name: Connexion au GitHub Container Registry
         uses: docker/login-action@v3
@@ -43,4 +72,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/${{ github.repository }}/nextjs-app:${{ needs.setup-docker-tag.outputs.docker_tag || 'latest' }}
+          tags: ghcr.io/${{ github.repository }}:${{ needs.setup-docker-tag.outputs.docker_tag || 'latest' }}
