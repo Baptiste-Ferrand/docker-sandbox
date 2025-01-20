@@ -46,7 +46,9 @@ jobs:
 
   # Job 3: Construire et déployer l'image Docker
   build-and-deploy-image:
-    needs: setup-docker-tag
+    needs: 
+      - setup-docker-tag
+      - install-dependencies-and-build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout du dépôt
