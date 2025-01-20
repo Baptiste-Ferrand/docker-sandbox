@@ -22,7 +22,7 @@ COPY --from=builder /app/public public
 
 ENV NODE_ENV=production
 
-RUN npm ci --frozen-lockfile 
+RUN npm ci 
 RUN npm cache clean --force
 
 EXPOSE 3000
