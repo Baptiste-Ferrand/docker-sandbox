@@ -50,6 +50,9 @@ jobs:
       - setup-docker-tag
       - install-dependencies-and-build
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: Checkout du dépôt
         uses: actions/checkout@v4
