@@ -1,3 +1,12 @@
+name: Next.js Docker CI/CD
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+
+      
 jobs:
   setup-docker-tag:
     runs-on: ubuntu-latest
@@ -34,4 +43,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/${{ github.repository }}:${{ needs.setup-docker-tag.outputs.docker_tag || 'latest' }}
+          tags: ghcr.io/${{ github.repository }}/nextjs-app:${{ needs.setup-docker-tag.outputs.docker_tag || 'latest' }}
